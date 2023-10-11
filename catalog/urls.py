@@ -1,7 +1,8 @@
 from django.template.defaulttags import url
 from django.urls import path, re_path
-
+from django.contrib.auth import views as auth_views
 from locallibrary import settings
+from django.urls import include
 from . import views
 from django.views.static import serve
 
@@ -19,6 +20,12 @@ urlpatterns = [
     path('available/', views.AvailBooksListView.as_view(), name='all_available'),
     path('book/create/', views.BookCreate.as_view(), name='book_create'),
     path('book/<int:pk>/delete/', views.book_delete, name='book_delete'),
+    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('accounts/', include('django.contrib.auth.urls')),
+
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]
